@@ -52,7 +52,7 @@
             console.log("✅ Page Loaded, Initializing Emulator...");
 
             if (typeof EmulatorJS !== "undefined") {
-                console.log("✅ EmulatorJS Loaded!");
+                console.log("✅ EmulatorJS Loaded");
 
                 // Initialize emulator
                 emulator = new EmulatorJS({
@@ -61,13 +61,13 @@
                 });
 
                 emulator.initialize().then(() => {
-                    console.log("✅ Emulator Initialized!");
+                    console.log("✅ Emulator Initialized");
                 }).catch(err => {
-                    console.error("❌ Error Initializing Emulator:", err);
+                    console.error("❌ Shits fucked, please stand by.:", err);
                 });
 
             } else {
-                console.error("❌ EmulatorJS is not loaded! Check `assets/emulator.js`.");
+                console.error("❌ Check assets folder dumbass`.");
             }
         };
 
