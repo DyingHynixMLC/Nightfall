@@ -1,21 +1,21 @@
 <!DOCTYPE HTML>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="darkreader-lock">
     <meta name="title" content="Nightfall">
     <meta name="description" content="silly proxy">
-    <meta name="og:title" content="Nightfall">
-    <meta name="og:description" content="silly proxy">
+    <meta property="og:title" content="Nightfall">
+    <meta property="og:description" content="silly proxy">
     <meta property="og:image" content="https://dyinghynixmlc.github.io/Nightfall/assets/icon.ico">
     <meta property="og:image:width" content="1600">
     <meta property="og:image:height" content="1500">
     <title>Nightfall Proxy</title>
     <link rel="icon" href="https://dyinghynixmlc.github.io/Nightfall/assets/icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+</head>
+<body>
     <header class="header">
         <div class="logo">
             <img src="https://dyinghynixmlc.github.io/Nightfall/assets/bg_rm_rf.png" alt="Nightfall Logo">
@@ -28,56 +28,76 @@
             <a href="https://dyinghynixmlc.github.io/Nightfall/Emulator.html">Emulator</a>
         </nav>
     </header>
-    
-    <div class="flex flex-col items-center p-4">
-      <canvas id="emulatorCanvas" width="640" height="480" class="border rounded"></canvas>
-      <input type="file" 
-             id="romUpload" 
-             accept=".nes,.snes,.gba,.gb,.gbc,.nds,.n64,.bin,.genesis,.sms,.sg,.pce,.tg16,.iso,.cue" 
-             class="mt-2" 
-             disabled>
+
+    <div id="top">
+        <h1>Upload a ROM to Play</h1>
     </div>
 
+    <div id="box">
+        <input type="file" id="romInput" accept=".nes,.snes,.gba,.gb,.genesis">
+    </div>
+
+    <div class="emulator-container">
+        <canvas id="emulatorCanvas" width="640" height="480"></canvas>
+    </div>
+
+    <!-- Load EmulatorJS -->
+    <script src="assets/emulator.js"></script>
+
     <script>
-      let emulator;
+        let emulator;
 
-      function initializeEmulator() {
-        const canvas = document.getElementById("emulatorCanvas");
-        const script = document.createElement("script");
-        script.src = "./assets/loader.js";
-        script.onload = () => {
-          emulator = new EmulatorJS({
-            canvas: canvas,
-            systems: ["nes", "snes", "gba", "gb", "genesis"]
-          });
+        // Wait until the page is fully loaded
+        window.onload = function() {
+            console.log("✅ Page Loaded, Initializing Emulator...");
 
-          emulator.initialize().then(() => {
-            document.getElementById("romUpload").disabled = false;
-          });
+            if (typeof EmulatorJS !== "undefined") {
+                console.log("✅ EmulatorJS Loaded!");
+
+                // Initialize emulator
+                emulator = new EmulatorJS({
+                    canvas: document.getElementById("emulatorCanvas"),
+                    systems: ["nes", "snes", "gba", "gb", "genesis"]
+                });
+
+                emulator.initialize().then(() => {
+                    console.log("✅ Emulator Initialized!");
+                }).catch(err => {
+                    console.error("❌ Error Initializing Emulator:", err);
+                });
+
+            } else {
+                console.error("❌ EmulatorJS is not loaded! Check assets/emulator.js.");
+            }
         };
-        document.body.appendChild(script);
-      }
 
-      function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (file && emulator) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const romData = new Uint8Array(e.target.result);
-            emulator.loadROM(romData).then(() => {
-              emulator.start();
-            });
-          };
-          reader.readAsArrayBuffer(file);
-        }
-      }
+        // Handle ROM file upload
+        document.getElementById("romInput").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file && emulator) {
+                console.log("✅ ROM File Selected:", file.name);
 
-      document.getElementById("romUpload").addEventListener("change", handleFileUpload);
-      window.onload = initializeEmulator;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const romData = new Uint8Array(e.target.result);
+
+                    emulator.loadROM(romData).then(() => {
+                        console.log("✅ ROM Loaded Successfully!");
+                        emulator.start();
+                    }).catch(err => {
+                        console.error("❌ Failed to Load ROM:", err);
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+            } else {
+                console.error("❌ No ROM selected or Emulator not loaded!");
+            }
+        });
     </script>
 
     <footer class="footer">
-      <span>Made with HATE by the <a href="https://github.com/DyingHynixMLC/Nightfall">Nightfall</a> team</span>
+        <span>Made with HATE by the <a href="https://github.com/DyingHynixMLC/Nightfall">Nightfall</a> team</span>
     </footer>
-  </body>
+</body>
 </html>
