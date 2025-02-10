@@ -34,50 +34,66 @@
     </div>
 
     <div id="box">
-        <input type="file" id="input" accept=".nes,.snes,.gba,.gb,.genesis">
+        <input type="file" id="romInput" accept=".nes,.snes,.gba,.gb,.genesis">
     </div>
 
     <div class="emulator-container">
         <canvas id="emulatorCanvas" width="640" height="480"></canvas>
     </div>
 
+    <!-- Load EmulatorJS -->
+    <script src="assets/emulator.js"></script>
+
     <script>
         let emulator;
 
-        function loadEmulator() {
-            const script = document.createElement("script");
-            script.src = "./assets/loader.js";
-            script.onload = () => {
+        // Wait until the page is fully loaded
+        window.onload = function() {
+            console.log("✅ Page Loaded, Initializing Emulator...");
+
+            if (typeof EmulatorJS !== "undefined") {
+                console.log("✅ EmulatorJS Loaded!");
+
+                // Initialize emulator
                 emulator = new EmulatorJS({
                     canvas: document.getElementById("emulatorCanvas"),
                     systems: ["nes", "snes", "gba", "gb", "genesis"]
                 });
 
                 emulator.initialize().then(() => {
-                    console.log("Emulator initialized");
+                    console.log("✅ Emulator Initialized!");
+                }).catch(err => {
+                    console.error("❌ Error Initializing Emulator:", err);
                 });
-            };
-            document.body.appendChild(script);
-        }
 
-        document.getElementById("input").addEventListener("change", function(event) {
+            } else {
+                console.error("❌ EmulatorJS is not loaded! Check `assets/emulator.js`.");
+            }
+        };
+
+        // Handle ROM file upload
+        document.getElementById("romInput").addEventListener("change", function(event) {
             const file = event.target.files[0];
             if (file && emulator) {
+                console.log("✅ ROM File Selected:", file.name);
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const romData = new Uint8Array(e.target.result);
+
                     emulator.loadROM(romData).then(() => {
+                        console.log("✅ ROM Loaded Successfully!");
                         emulator.start();
-                        console.log("ROM loaded and started");
+                    }).catch(err => {
+                        console.error("❌ Failed to Load ROM:", err);
                     });
                 };
+
                 reader.readAsArrayBuffer(file);
             } else {
-                console.error("Emulator not loaded yet!");
+                console.error("❌ No ROM selected or Emulator not loaded!");
             }
         });
-
-        window.onload = loadEmulator;
     </script>
 
     <footer class="footer">
