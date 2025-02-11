@@ -1,9 +1,9 @@
 # Nightfall
 <sub>Site layout inspired by [Nebula](https://github.com/NebulaServices/Nebula)</sub>
 
-Nightfall is a proxy that uses Ultraviolet, BareMux, and Epoxy to free the internet of censorship... okay yeah I give up
+Nightfall is a proxy that uses Ultraviolet, BareMux, and Epoxy to free the internet of censorship blah blah blah... okay yeah I give up. You use this to get past school filters, gogaurdian, securly, all that stuff. Hell it even works if your school uses ARISTOTLE... for some reason.
 
-You've used a proxy before, you know what this does
+Oh yeah theres games too.
 
 ## Developers:
 - [kraeb](https://discord.com/users/721608676783423499)
